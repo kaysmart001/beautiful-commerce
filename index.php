@@ -1,0 +1,14 @@
+<?php include_once('header.php'); ?>
+<?php include_once('configurations.php'); ?>
+<?php include_once('slider.php'); ?>
+<?php include_once('welcome.php'); ?>
+<?php include_once('latest-product.php'); ?>
+<?php include_once('collections.php'); ?>
+<?php include_once('popular-product.php'); ?>
+<?php include_once('category-slider.php'); ?>
+<?php include_once('featured-product.php'); ?>
+<?php include_once('products-category-tab.php'); ?>
+<?php include_once('testimonials.php'); ?>
+<?php include_once('blogs.php'); ?>
+<?php include_once('footer.php'); ?>
+<?php include_once('modals.php'); ?>
