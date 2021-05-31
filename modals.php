@@ -723,7 +723,30 @@
 
 <!-- range sldier -->
 <script src="assets/js/ion.rangeSlider.js"></script>
-<script src="assets/js/rangeslidermain.js"></script>
+<?php
+$statement = $pdo->prepare("SELECT max(p_current_price) as maximum_price,min(p_current_price) as minimum_price FROM tbl_product");
+$statement->execute();
+$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+foreach ($result as $row){
+$max=$row['maximum_price'];
+$min=$row['minimum_price'];
+} 
+?>
+<script>
+  /*=====================  
+ range slide
+ ==========================*/
+
+    $(".js-range-slider").ionRangeSlider({
+       type: "double",
+        grid: true,
+        min: 0,
+        max: <?php echo $max + 5000; ?>,
+        from: <?php echo $min; ?>,
+        to: <?php echo $max; ?>,
+    });
+ 
+</script>
 
 <!-- tool tip js -->
 <script src="assets/js/tippy-popper.min.js"></script>
@@ -759,8 +782,7 @@
 <script src="assets/js/select2.full.min.js"></script>
 <!-- Theme js-->
 <script src="assets/js/script.js"></script>
-<script src="assets/js/timer1.js"></script>
-<script src="assets/js/timer2.js"></script>
+<!-- <script src="assets/js/timer2.js"></script> -->
 <script src="assets/js/modal.js"></script>
 <script>
 $('.quickie').on('click',function(){
@@ -770,8 +792,61 @@ $('.quickie').on('click',function(){
     });
 });
 </script>
+
+<script>
+  $(document).ready(function() {
+
+      // filter_data();
+
+      function filter_data() {
+          $('.filter_data');
+          var action = 'fetch_data';
+          var minimum_price = $('.js-range-slider').val();
+          var maximum_price = $('.js-range-slider').val();
+          var brand = get_filter('brand');
+          var color = get_filter('color');
+          var size = get_filter('size');
+          // var sorting=get_filter('sorting');
+          var id=<?php echo $id; ?>;
+          var type='<?php echo $type; ?>';
+          $.ajax({
+              url: "fetch.php",
+              method: "POST",
+              data: {
+                  action: action,
+                  minimum_price: minimum_price,
+                  maximum_price: maximum_price,
+                  brand: brand,
+                  color: color,
+                  size: size,
+                  sorting:sorting,
+                  id:id,
+                  type:type
+              },
+              success: function(data) {
+                  $('.filter_data').html(data);
+              }
+          });
+      }
+
+      function get_filter(class_name) {
+          var filter = [];
+          $('.' + class_name + ':checked').each(function() {
+              filter.push($(this).val());
+          });
+          return filter;
+      }
+
+      $('.filter_all').click(function() {
+          filter_data();
+      });
+
+
+  });
+</script>
+
 <script type="text/javascript">
-  var str = 'https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img01.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img02.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img03.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img04.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img05.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img06.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img07.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img08.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img09.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img10.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img11.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img12.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img13.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img14.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img15.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img16.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img17.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img18.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img19.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img20.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img21.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img22.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img23.jpg, https://cdn.shopify.com/s/files/1/0032/3279/2674/files/img24.jpg';
+  var str = <?php echo "'".$fotos."'"; ?>;
   var img_array = str.split(',');
   var len_count = img_array.length;
 

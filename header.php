@@ -679,13 +679,13 @@ foreach ($result as $row) {
                   <div class="store-locator">
                      <select>
                         <option value="">Brands</option>
-                        <option value="store1">Lagos</option>
-                        <option value="store2">Abuja</option>
-                        <option value="store3">Kano</option>
-                        <option value="store4">Ogun</option>
-                        <option value="store5">Dubai</option>
-                        <option value="store6">Michigan</option>
-                        <option value="store7">Kenya</option>
+                        <?php
+                        $statement = $pdo->prepare("SELECT * FROM tbl_brand");
+                        $statement->execute();
+                        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+                        foreach ($result as $row): ?>
+                        <option><?php echo $row['brand_name']; ?></option>
+                        <?php endforeach; ?>
                      </select>
                   </div>
                </div>

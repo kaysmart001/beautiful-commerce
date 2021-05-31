@@ -1,5 +1,6 @@
-<?php include_once('header.php'); ?>
-<?php
+<?php include_once('header.php');
+$id=$_REQUEST['id'];
+$type=$_REQUEST['type'];
 $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
 $statement->execute();
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);                            
@@ -186,9 +187,12 @@ if( !isset($_REQUEST['id']) || !isset($_REQUEST['type']) ) {
                           </div>
                           <div class="product-page-filter">
                             <select>
-                              <option value="High to low">Sorting items</option>
-                              <option value="Low to High">50 Products</option>
-                              <option value="Low to High">100 Products</option>
+                              <option>Sorting items</option>
+                              <option value="p_total_view desc" class="filter_all sorting">Sort by popularity</option>
+                              <option value="p_id desc" class="filter_all sorting">Sort by latest</option>
+                              <option value="rating" class="filter_all sorting">Sort by average rating</option>
+                              <option value="p_current_price asc" class="filter_all sorting">Sort by price:low to high</option>
+                              <option value="p_current_price desc" class="filter_all sorting">Sort by price:high to low</option>
                             </select>
                           </div>
                         </div>
@@ -196,7 +200,7 @@ if( !isset($_REQUEST['id']) || !isset($_REQUEST['type']) ) {
                     </div>
                   </div>
                   <div class="product-wrapper-grid product-load-more product">
-                    <div class="row">
+                    <div class="row filter_data">
                     	<?php
                         // Checking if any product is available or not
                         $prod_count = 0;
@@ -363,7 +367,8 @@ if( !isset($_REQUEST['id']) || !isset($_REQUEST['type']) ) {
                       ?>
                     </div>
                   </div>
-                  <div class="load-more-sec"><a href="javascript:void(0)" class="loadMore">load more</a></div>
+                  <div class="load-more-sec"><a href="javascript:void(0)" class="loadMore">load more</a>
+                  </div>
                 </div>
               </div>
             </div>

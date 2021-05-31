@@ -163,7 +163,7 @@
                                     </div>
                                     <div class="detail-right">
                                         <div class="check-price">
-                                        <?php if($row['p_old_price'] != ''): ?>
+                                        <?php if($row['p_old_price'] != 0): ?>
                                           <?php echo $currency.$row['p_old_price']; ?>
                                         <?php endif; ?>
                                       </div>
