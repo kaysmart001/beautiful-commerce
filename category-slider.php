@@ -11,7 +11,7 @@
          <div class="col-12 pr-0">
             <div class="category-slide5two no-arrow">
                <?php
-                     $statement = $pdo->prepare("SELECT * FROM tbl_top_category");
+                     $statement = $pdo->prepare("SELECT * FROM tbl_top_category WHERE show_on_menu=1");
                      $statement->execute();
                      $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                      ?>

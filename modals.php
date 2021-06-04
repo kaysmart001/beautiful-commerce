@@ -796,13 +796,13 @@ $('.quickie').on('click',function(){
 <script>
   $(document).ready(function() {
 
-      // filter_data();
+      filter_data();
 
       function filter_data() {
           $('.filter_data');
           var action = 'fetch_data';
-          var minimum_price = $('.js-range-slider').val();
-          var maximum_price = $('.js-range-slider').val();
+          // var minimum_price = $('.js-range-slider').val();
+          // var maximum_price = $('.js-range-slider').val();
           var brand = get_filter('brand');
           var color = get_filter('color');
           var size = get_filter('size');
@@ -814,12 +814,11 @@ $('.quickie').on('click',function(){
               method: "POST",
               data: {
                   action: action,
-                  minimum_price: minimum_price,
-                  maximum_price: maximum_price,
+                  // minimum_price: minimum_price,
+                  // maximum_price: maximum_price,
                   brand: brand,
                   color: color,
                   size: size,
-                  sorting:sorting,
                   id:id,
                   type:type
               },

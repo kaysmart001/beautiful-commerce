@@ -4,6 +4,11 @@
 if(isset($_POST['form1'])) {
 	$valid = 1;
 
+	if(empty($_POST['brand_id'])) {
+        $valid = 0;
+        $error_message .= "You must have to select a brand<br>";
+    }
+
     if(empty($_POST['tcat_id'])) {
         $valid = 0;
         $error_message .= "You must have to select a top level category<br>";
@@ -36,6 +41,19 @@ if(isset($_POST['form1'])) {
 
     $path = $_FILES['p_featured_photo']['name'];
     $path_tmp = $_FILES['p_featured_photo']['tmp_name'];
+
+    $path2 = $_FILES['p_featured_video']['name'];
+    $path_tmp2 = $_FILES['p_featured_video']['tmp_name'];
+
+    if($path2!='') {
+        $ext2 = pathinfo( $path2, PATHINFO_EXTENSION );
+        $file_name2 = basename( $path2, '.' . $ext2 );
+        if( $ext2 !='mp4' ) {
+            $valid = 0;
+            $error_message .= 'You must have to upload mp4 video file<br>';
+        }
+       $video_name = 'featured-video'.mt_rand().'.'.$ext2;
+    }
 
     if($path!='') {
         $ext = pathinfo( $path, PATHINFO_EXTENSION );
@@ -101,6 +119,10 @@ if(isset($_POST['form1'])) {
 		$final_name = 'product-featured-'.mt_rand().$ai_id.'.'.$ext;
         move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
 
+        if ($video_name !='') {
+        	move_uploaded_file( $path_tmp2, '../assets/video/'.$video_name );
+        }
+
 		//Saving data into the main table tbl_product
 		$statement = $pdo->prepare("INSERT INTO tbl_product(
 										p_name,
@@ -108,6 +130,7 @@ if(isset($_POST['form1'])) {
 										p_current_price,
 										p_qty,
 										p_featured_photo,
+										p_featured_video,
 										p_description,
 										p_short_description,
 										p_feature,
@@ -116,14 +139,16 @@ if(isset($_POST['form1'])) {
 										p_total_view,
 										p_is_featured,
 										p_is_active,
-										ecat_id
-									) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+										ecat_id,
+										brand_id
+									) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		$statement->execute(array(
 										$_POST['p_name'],
 										$_POST['p_old_price'],
 										$_POST['p_current_price'],
 										$_POST['p_qty'],
 										$final_name,
+										$video_name,
 										$_POST['p_description'],
 										$_POST['p_short_description'],
 										$_POST['p_feature'],
@@ -132,7 +157,8 @@ if(isset($_POST['form1'])) {
 										0,
 										$_POST['p_is_featured'],
 										$_POST['p_is_active'],
-										$_POST['ecat_id']
+										$_POST['ecat_id'],
+										$_POST['brand_id']
 									));
 
 		
@@ -192,6 +218,24 @@ if(isset($_POST['form1'])) {
 				<div class="box box-info">
 					<div class="box-body">
 						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Brand Name<span>*</span></label>
+							<div class="col-sm-4">
+								<select name="brand_id" class="form-control select2">
+									<option value="">Select Brand</option>
+									<?php
+									$statement = $pdo->prepare("SELECT * FROM tbl_brand ORDER BY brand_name ASC");
+									$statement->execute();
+									$result = $statement->fetchAll(PDO::FETCH_ASSOC);	
+									foreach ($result as $row) {
+										?>
+										<option value="<?php echo $row['brand_id']; ?>"><?php echo $row['brand_name']; ?></option>
+										<?php
+									}
+									?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">Top Level Category Name <span>*</span></label>
 							<div class="col-sm-4">
 								<select name="tcat_id" class="form-control select2 top-cat">
@@ -244,7 +288,7 @@ if(isset($_POST['form1'])) {
 							</div>
 						</div>	
 						<div class="form-group">
-							<label for="" class="col-sm-3 control-label">Quantity <span>*</span></label>
+							<label for="" class="col-sm-3 control-label"> Available Quantity <span>*</span></label>
 							<div class="col-sm-4">
 								<input type="text" name="p_qty" class="form-control">
 							</div>
@@ -287,6 +331,12 @@ if(isset($_POST['form1'])) {
 							<label for="" class="col-sm-3 control-label">Featured Photo <span>*</span></label>
 							<div class="col-sm-4" style="padding-top:4px;">
 								<input type="file" name="p_featured_photo">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="" class="col-sm-3 control-label">Featured Video</label>
+							<div class="col-sm-4" style="padding-top:4px;">
+								<input type="file" name="p_featured_video">
 							</div>
 						</div>
 						<div class="form-group">

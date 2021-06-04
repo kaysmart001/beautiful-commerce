@@ -14,7 +14,7 @@
                   $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                   foreach ($result as $row): ?>
                   <div class="custom-control custom-checkbox  form-check collection-filter-checkbox">
-                    <input type="checkbox" class="custom-control-input form-check-input filter_all brand" id="brand-<?php echo $row['brand_id']; ?>" value="<?php echo $row['brand_id']; ?>">
+                    <input type="checkbox" class="custom-control-input form-check-input filter_all brand" id="brand-<?php echo $row['brand_id']; ?>" value="<?php echo $row['brand_name']; ?>">
                     <label class="custom-control-label form-check-label" for="brand-<?php echo $row['brand_id']; ?>"><?php echo $row['brand_name']; ?></label>
                   </div>
                   <?php endforeach; ?>
@@ -34,7 +34,7 @@
                   $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                   foreach ($result as $row): ?>
                     <div class="custom-control custom-checkbox  form-check collection-filter-checkbox">
-                      <input type="checkbox" class="custom-control-input form-check-input filter_all color" id="color-<?php echo $row['color_id']; ?>" value="<?php echo $row['color_id']; ?>">
+                      <input type="checkbox" class="custom-control-input form-check-input filter_all color" id="color-<?php echo $row['color_id']; ?>" value="<?php echo $row['color_name']; ?>">
                       <label class="custom-control-label form-check-label" for="color-<?php echo $row['color_id']; ?>"><?php echo $row['color_name']; ?></label>
                     </div>
                   <?php endforeach; ?>
@@ -55,7 +55,7 @@
                   $result = $statement->fetchAll(PDO::FETCH_ASSOC);
                   foreach ($result as $row): ?>
                     <div class="custom-control custom-checkbox  form-check collection-filter-checkbox">
-                      <input type="checkbox" class="custom-control-input form-check-input filter_all size" id="size-<?php echo $row['size_id']; ?>" value="<?php echo $row['size_id']; ?>">
+                      <input type="checkbox" class="custom-control-input form-check-input filter_all size" id="size-<?php echo $row['size_id']; ?>" value="<?php echo $row['size_name']; ?>">
                       <label class="custom-control-label form-check-label" for="size-<?php echo $row['size_id']; ?>"><?php echo $row['size_name']; ?></label>
                     </div>
                   <?php endforeach; ?>

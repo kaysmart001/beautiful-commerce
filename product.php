@@ -21,6 +21,7 @@ foreach($result as $row) {
     $p_current_price = $row['p_current_price'];
     $p_qty = $row['p_qty'];
     $p_featured_photo = $row['p_featured_photo'];
+    $p_featured_video = $row['p_featured_video'];
     $photos[]='assets/uploads/'.$p_featured_photo;
     $p_description = $row['p_description'];
     $p_short_description = $row['p_short_description'];
@@ -501,6 +502,13 @@ if($success_message1 != '') {
             }
             $fotos=implode(',', $photos);
             ?>
+            <?php if($p_featured_video !=''): ?>
+            <div class="video-product">
+              <video  controls>
+                <source src="assets/video/<?php echo $p_featured_video; ?>" type="video/mp4" >
+              </video>
+            </div>
+            <?php endif; ?>
           </div>
           <div class="row">
             <div class="col-12 p-0">
@@ -517,6 +525,14 @@ if($success_message1 != '') {
 	                <?php
 	            }
 	            ?>
+                <?php if($p_featured_video !=''): ?>
+                <div>
+                  <div class="video-icon">
+                    <div><img src="assets/uploads/<?php echo $p_featured_photo; ?>" alt="product video" class="img-fluid"></div>
+                    <i class="fa fa-play" aria-hidden="true"></i>
+                  </div>
+                </div>
+                <?php endif; ?>
               </div>
             </div>
           </div>

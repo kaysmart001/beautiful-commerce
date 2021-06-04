@@ -1,4 +1,24 @@
 <?php
+SELECT p.*,ecat_name,mcat_name,tcat_name from tbl_product p join tbl_end_category ec on p.ecat_id=ec.ecat_id join tbl_mid_category mc on ec.mcat_id=mc.mcat_id join tbl_top_category tc on mc.tcat_id=tc.tcat_id where tc.tcat_id=1 ORDER BY `p`.`p_id` DESC
+
+SELECT p.*,ecat_name,mcat_name,tcat_name from tbl_product p join tbl_end_category ec on p.ecat_id=ec.ecat_id join tbl_mid_category mc on ec.mcat_id=mc.mcat_id join tbl_top_category tc on mc.tcat_id=tc.tcat_id
+
+"SELECT p.*, c.color_name, b.brand_name from tbl_product p join tbl_product_color pc on pc.p_id=p.p_id join tbl_color c on pc.color_id=c.color_id join tbl_brand b on p.brand_id= b.brand_id WHERE p.ecat_id=? AND p.p_is_active=? ";
+
+        if (isset($_POST["brand"])) {
+            $brand_filter = implode("','", $_POST["brand"]);
+            $query .= "
+       AND b.brand_name IN('" . $brand_filter . "')
+      ";
+        }
+        if (isset($_POST["color"])) {
+            $color_filter = implode("','", $_POST["color"]);
+            $query .= "
+       AND c.color_name IN('" . $color_filter . "')
+      ";
+        }
+        $query.="group by c.color_name,p.p_name";
+        
 SELECT p.*,c.color_name,b.brand_name ,s.size_name from tbl_product p join tbl_product_color pc on pc.p_id=p.p_id join tbl_color c on pc.color_id=c.color_id join tbl_brand b on p.brand_id= b.brand_id join tbl_product_size pz on pz.p_id= p.p_id join tbl_size s on pz.size_id=s.size_id group by c.color_name,p.p_name;
 $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
 $statement->execute();
@@ -283,4 +303,171 @@ if($prod_count==0) {
 <?php
         }
     }
+
+
+
+if($prod_count==0) {
+  $output='<div class="p-3">'.LANG_VALUE_153.'</div>';
+} else {
+  for($ii=0;$ii<count($final_ecat_ids);$ii++) {
+      $query="SELECT p.*, c.color_name, b.brand_name from tbl_product p join tbl_product_color pc on pc.p_id=p.p_id join tbl_color c on pc.color_id=c.color_id join tbl_brand b on p.brand_id= b.brand_id WHERE p.ecat_id=? AND p.p_is_active=? ";
+
+        if (isset($_POST["brand"])) {
+            $brand_filter = implode("','", $_POST["brand"]);
+            $query .= "
+       AND b.brand_name IN('" . $brand_filter . "')
+      ";
+        }
+        if (isset($_POST["color"])) {
+            $color_filter = implode("','", $_POST["color"]);
+            $query .= "
+       AND c.color_name IN('" . $color_filter . "')
+      ";
+        }
+        $query.="group by c.color_name,p.p_name";
+      $statement = $pdo->prepare($query);
+      $statement->execute(array($final_ecat_ids[$ii],1));
+      $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+      $total_row = $statement->rowCount();
+      $output    = '';
+      if ($total_row > 0) {
+        foreach ($result as $row) {
+          $output .= '<div class="col-xl-3 col-md-4 col-6 col-grid-box">
+                        <div class="product-box">
+                            <div class="product-imgbox">
+                                <div class="product-front">
+                                    <a href="product.php?id=' .$row['p_id']. '">
+                                        <img src="assets/uploads/' .$row['p_featured_photo']. '" class="img-fluid  " alt="product">
+                                    </a>
+                                </div>';
+
+          $statement = $pdo->prepare("SELECT * FROM tbl_product_photo WHERE p_id=?");
+          $statement->execute(array($row['p_id']));
+          $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+          if (count($result)>0) {
+          foreach ($result as $photo) {
+            $output .='<div class="product-back">
+                        <a href="product.php?id='.$row['p_id'].'">
+                          <img src="assets/uploads/product_photos/'. $photo['photo'].'" class="img-fluid  " alt="product">
+                        </a>
+                      </div>';
+                                }
+                              }
+            $output.='<div class="product-icon icon-inline">';
+            if($row['p_qty'] == 0){
+              $output.='<div class="out-of-stock">
+                                            <div class="inner">
+                                                Out Of Stock
+                                            </div>
+                                        </div>';
+            }else{
+              $output.='<button data-id="'. $row['p_id'].'" class="tooltip-top quickie"  data-tippy-content="Quick View">
+                                        <i  data-feather="eye"></i>
+                                    </button>
+                                    <a href="compare.html" class="tooltip-top" data-tippy-content="Compare">
+                                        <i  data-feather="refresh-cw"></i>
+                                    </a>';
+            }
+            $output.='</div>
+                            </div>
+                            <div class="product-detail detail-center detail-inverse">
+                                <div class="detail-title">
+                                    <div class="detail-left">';
+            $t_rating = 0;
+            $statement1 = $pdo->prepare("SELECT * FROM tbl_rating WHERE p_id=?");
+            $statement1->execute(array($row['p_id']));
+            $tot_rating = $statement1->rowCount();
+            if($tot_rating == 0) {
+                $avg_rating = 0;
+            } else {
+                $result1 = $statement1->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($result1 as $row1) {
+                    $t_rating = $t_rating + $row1['rating'];
+                }
+                $avg_rating = $t_rating / $tot_rating;
+            }
+            $output.='<div class="rating-star">';
+            if($avg_rating == 0) {
+                    $output.='';
+                }
+                elseif($avg_rating == 1.5) {
+                    $output.='
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-half-o"></i>
+                        <i class="fa fa-star-o"></i>
+                        <i class="fa fa-star-o"></i>
+                        <i class="fa fa-star-o"></i>
+                    ';
+                } 
+                elseif($avg_rating == 2.5) {
+                    $output.='
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-half-o"></i>
+                        <i class="fa fa-star-o"></i>
+                        <i class="fa fa-star-o"></i>
+                    ';
+                }
+                elseif($avg_rating == 3.5) {
+                    $output.='
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-half-o"></i>
+                        <i class="fa fa-star-o"></i>
+                    ';
+                }
+                elseif($avg_rating == 4.5) {
+                    $output.= '
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-half-o"></i>
+                    ';
+                }
+                else {
+                    for($i=1;$i<=5;$i++) {
+                      if($i>$avg_rating){
+                        $output.='<i class="fa fa-star-o"></i>';
+                      }else{
+                        $output.='<i class="fa fa-star"></i>';
+                      }
+                    }
+                  }
+                $output.='</div>
+                            <a href="product.php?id='.$row['p_id'].'">
+                                <h6 class="price-title">
+                                    '. $row['p_name'].'
+                                </h6>
+                            </a>
+                        </div>
+                        <div class="detail-right">
+                            <div class="check-price">';
+                            if($row['p_old_price'] != ''){
+                              $output.=$currency.$row['p_old_price'];
+                            }
+                $output.='</div>
+                              <div class="price">
+                                  <div class="price">'.$currency.$row['p_current_price'].' 
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            </div>';
+          }
+        }
+        else {
+        $output = '<h3 class="text-center">No Product Found</h3>';
+    }
+      }
+    }
+
+    
+    echo $output;
+}
+
+
 ?>

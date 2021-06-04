@@ -69,7 +69,7 @@ if($tot_rating == 0) {
 		              <h2><?php echo $p_name; ?></h2>
 		              <ul class="pro-price">
 		                <li><?php echo $currency.$p_current_price; ?></li>
-		                <?php if($p_old_price!=''): ?>
+		                <?php if($p_old_price!=0): ?>
 		                    <li><span><?php echo $currency.$p_old_price; ?></span></li>
 		                    <?php 
 		                    $off=($p_old_price-$p_current_price)/ $p_old_price * 100;
