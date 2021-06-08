@@ -11,6 +11,32 @@ if( ($type != 'top-category') && ($type != 'mid-category') && ($type != 'end-cat
     header('location: index.php');
     exit;
 } 
+
+$query="
+SELECT count(p.p_id) from tbl_product p join tbl_end_category ec on p.ecat_id=ec.ecat_id join tbl_mid_category mc on ec.mcat_id=mc.mcat_id join tbl_top_category tc on mc.tcat_id=tc.tcat_id join tbl_brand b on b.brand_id=p.brand_id
+";
+
+if ($type=='top-category') {
+$query.="
+WHERE tc.tcat_id='". $id ."'
+";
+}
+
+if ($type=='mid-category') {
+$query.="
+WHERE mc.mcat_id='". $id ."'
+";
+}
+
+if ($type=='end-category') {
+$query.="
+WHERE ec.ecat_id='". $id ."'
+";
+}
+
+$statement = $pdo->prepare($query);
+$statement->execute();  
+$total_row = $statement->rowCount();
 ?>
 
 <!-- section start -->
@@ -50,24 +76,22 @@ if( ($type != 'top-category') && ($type != 'mid-category') && ($type != 'end-cat
                             </ul>
                           </div>
                           <div class="product-page-per-view">
-                            <select>
-                              <option value="High to low">10 Products Per Page</option>	
-                              <option value="High to low">25 Products Per Page</option>
-                              <option value="Low to High">50 Products Per Page</option>
-                              <option value="Low to High">100 Products Per Page</option>
-                              <option value="Low to High">Show all</option>
+                            <select id="per_page">
+                              <option value="10">10 Products Per Page</option>
+                              <option value="25">25 Products Per Page</option>
+                              <option value="50">50 Products Per Page</option>
+                              <option value="100">100 Products Per Page</option>
                             </select>
                           </div>
                           <div class="product-page-filter">
-                            <select>
-                              <option>Sort by</option>
-                              <option value="p_total_view desc" class="filter_all sorting">Popularity</option>
-                              <option value="p_id desc" class="filter_all sorting">Newest</option>
-                              <option value="rating" class="filter_all sorting">Average rating</option>
-                              <option value="p_current_price asc" class="filter_all sorting">Price (low to high)</option>
-                              <option value="p_current_price desc" class="filter_all sorting">Price (high to low)</option>
-                              <option value="p_current_price desc" class="filter_all sorting">Name A-Z</option>
-                              <option value="p_current_price desc" class="filter_all sorting">Name Z-A</option>
+                            <select id="sort_by">
+                              <option value="p.p_id asc">Sort by</option>
+                              <option value="p.p_total_view desc">Popularity</option>
+                              <option value="p.p_id desc">Newest</option>
+                              <option value="p.p_current_price asc">Price (low to high)</option>
+                              <option value="p.p_current_price desc">Price (high to low)</option>
+                              <option value="p.p_name asc">Name A-Z</option>
+                              <option value="p.p_name desc">Name Z-A</option>
                             </select>
                           </div>
                         </div>
@@ -79,7 +103,7 @@ if( ($type != 'top-category') && ($type != 'mid-category') && ($type != 'end-cat
                     	
                     </div>
                   </div>
-                  <div class="load-more-sec"><a href="javascript:void(0)" class="loadMore">load more</a>
+                  <div class="load-more-sec"><a class="loadMore">load more</a>
                   </div>
                 </div>
               </div>

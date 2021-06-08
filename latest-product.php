@@ -67,7 +67,7 @@
                                     <?php if($row['p_qty'] == 0): ?>
                                         <div class="out-of-stock">
                                             <div class="inner">
-                                                Out Of Stock
+                                                Sold Out
                                             </div>
                                         </div>
                                     <?php else: ?>

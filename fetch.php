@@ -35,24 +35,48 @@
 if (isset($_POST["action"])) {
 $id=intval($_POST['id']);
 $type=$_POST['type'];
+$sort_by=$_POST['sort_by'];
+
+
+$query="
+SELECT p.*,c.color_name,b.brand_name,ecat_name,mcat_name,tcat_name from tbl_product p join tbl_product_color pc on pc.p_id=p.p_id join tbl_color c on pc.color_id=c.color_id join tbl_end_category ec on p.ecat_id=ec.ecat_id join tbl_mid_category mc on ec.mcat_id=mc.mcat_id join tbl_top_category tc on mc.tcat_id=tc.tcat_id join tbl_brand b on b.brand_id=p.brand_id
+";
+
 if ($type=='top-category') {
-$query="SELECT p.*,brand_name,ecat_name,mcat_name,tcat_name as title from tbl_product p join tbl_end_category ec on p.ecat_id=ec.ecat_id join tbl_mid_category mc on ec.mcat_id=mc.mcat_id join tbl_top_category tc on mc.tcat_id=tc.tcat_id join tbl_brand b on b.brand_id=p.brand_id where tc.tcat_id='".$id."'";
+$query.="
+WHERE tc.tcat_id='". $id ."'
+";
 }
 
 if ($type=='mid-category') {
-$query="SELECT p.*,brand_name,ecat_name,mcat_name as title,tcat_name from tbl_product p join tbl_end_category ec on p.ecat_id=ec.ecat_id join tbl_mid_category mc on ec.mcat_id=mc.mcat_id join tbl_top_category tc on mc.tcat_id=tc.tcat_id join tbl_brand b on b.brand_id=p.brand_id where mc.mcat_id='".$id."'";
+$query.="
+WHERE mc.mcat_id='". $id ."'
+";
 }
 
 if ($type=='end-category') {
-$query="SELECT p.*,brand_name,ecat_name as title,mcat_name,tcat_name from tbl_product p join tbl_end_category ec on p.ecat_id=ec.ecat_id join tbl_mid_category mc on ec.mcat_id=mc.mcat_id join tbl_top_category tc on mc.tcat_id=tc.tcat_id join tbl_brand b on b.brand_id=p.brand_id where ec.ecat_id='".$id."'";
+$query.="
+WHERE ec.ecat_id='". $id ."'
+";
 }
 
-// if ($type=='mid-category') {
-//     $query.="where mc.mcat_id=?";
-// }
-// if ($type=='end-category') {
-//     $query.="where ec.ecat_id=?";
-// }
+if (isset($_POST["brand"])) {
+$brand_filter = implode("','", $_POST["brand"]);
+$query .= "
+AND b.brand_name IN('" . $brand_filter . "')
+";
+}
+
+if (isset($_POST["color"])) {
+$color_filter = implode("','", $_POST["color"]);
+$query .= "
+AND c.color_name IN('" . $color_filter . "')
+";
+}
+
+$query.="group by p.p_id order by $sort_by";
+
+
 $statement = $pdo->prepare($query);
 $statement->execute();
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);  
@@ -61,23 +85,23 @@ $output    = '';
 
 if ($total_row > 0) {
 foreach ($result as $row) {
-  $title='<div class="breadcrumb-main ">
-                  <div class="container">
-                    <div class="row">
-                      <div class="col">
-                        <div class="breadcrumb-contain">
-                          <div>
-                            <ul>
-                              <li><a href="index.php">home</a></li>
-                              <li><i class="fa fa-angle-double-right"></i></li>
-                              <li><a href="javascript:void(0)">'.$row['title'].'</a></li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>';
+  // $title='<div class="breadcrumb-main ">
+  //                 <div class="container">
+  //                   <div class="row">
+  //                     <div class="col">
+  //                       <div class="breadcrumb-contain">
+  //                         <div>
+  //                           <ul>
+  //                             <li><a href="index.php">home</a></li>
+  //                             <li><i class="fa fa-angle-double-right"></i></li>
+  //                             <li><a href="javascript:void(0)">'.$row['title'].'</a></li>
+  //                           </ul>
+  //                         </div>
+  //                       </div>
+  //                     </div>
+  //                   </div>
+  //                 </div>
+  //               </div>';
   $output .= '
                 <div class="col-xl-3 col-md-4 col-6 col-grid-box">
                 <div class="product-box">
@@ -210,7 +234,6 @@ else
 {
 $output = '<h3 class="text-center">No Product Found</h3>';
 }
-    echo $title;
     echo $output;
 
 }

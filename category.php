@@ -1,4 +1,19 @@
 <?php include_once('header.php'); ?>
+<?php
+if(!isset($_REQUEST['slug'])) {
+    header('location: index.php');
+    exit;
+}
+
+$statement = $pdo->prepare("SELECT * FROM tbl_category WHERE category_slug=?");
+$statement->execute(array($_REQUEST['slug']));
+$statement->rowCount();
+$result = $statement->fetchAll(PDO::FETCH_ASSOC);                            
+foreach ($result as $row) {
+    $category_name = $row['category_name'];
+}
+
+?>
 <!-- breadcrumb start -->
 <div class="breadcrumb-main ">
     <div class="container">
@@ -6,11 +21,12 @@
             <div class="col">
                 <div class="breadcrumb-contain">
                     <div>
-                        <h2>blog</h2>
                         <ul>
                             <li><a href="index.php">home</a></li>
                             <li><i class="fa fa-angle-double-right"></i></li>
                             <li><a href="blog.php">blog</a></li>
+                            <li><i class="fa fa-angle-double-right"></i></li>
+                            <li><a href="#"><?php echo $category_name; ?></a></li>
                         </ul>
                     </div>
                 </div>
@@ -24,15 +40,18 @@
 $adjacents = 5;
 
 $statement = $pdo->prepare("SELECT * 
-                            FROM tbl_post t1
-                            JOIN tbl_category t2 
-                            ON t1.category_id = t2.category_id 
-                            ORDER BY t1.post_id DESC");                
-$statement->execute();
+                        FROM tbl_post t1
+                        JOIN tbl_category t2 
+                        ON t1.category_id = t2.category_id
+                        WHERE t2.category_slug = ?
+                        ORDER BY t1.post_id DESC");
+$statement->execute(array($_REQUEST['slug']));
 $total_pages = $statement->rowCount();
 
 
-$targetpage = $_SERVER['PHP_SELF'];   //your file name  (the name of this file)
+$cur_page = substr($_SERVER["SCRIPT_NAME"],strrpos($_SERVER["SCRIPT_NAME"],"/")+1);
+
+$targetpage = BASE_URL.$cur_page.'?slug='.$_REQUEST['slug'];   //your file name  (the name of this file)
 $limit = 10;                                 //how many items to show per page
 $page = @$_GET['page'];
 if($page) 
@@ -43,10 +62,11 @@ else
 $statement = $pdo->prepare("SELECT * 
                             FROM tbl_post t1
                             JOIN tbl_category t2 
-                            ON t1.category_id = t2.category_id 
+                            ON t1.category_id = t2.category_id
+                            WHERE t2.category_slug = ?
                             ORDER BY t1.post_id DESC
-                            LIMIT $start, $limit"); 
-$statement->execute();
+                            LIMIT $start, $limit");
+$statement->execute(array($_REQUEST['slug']));
 $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 

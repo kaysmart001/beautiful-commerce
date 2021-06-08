@@ -1706,18 +1706,6 @@ $('.feature-slide').slick({
   $('.filter-back').on('click', function(e) {
     $('.dashboard-left').css("left","-365px");
   });
-
-  $(function () {
-    $(".col-grid-box").slice(0, 8).show();
-    $(".loadMore").on('click', function (e) {
-      e.preventDefault();
-      $(".col-grid-box:hidden").slice(0, 4).slideDown();
-      if ($(".col-grid-box:hidden").length == 0) {
-        $(".load-more-sec").text('no more products');
-      }
-    });
-  });
-
   $('.horizontal-filter-toggle').on('click', function(e) {
     $('.horizontal-filter').slideToggle('');
   });

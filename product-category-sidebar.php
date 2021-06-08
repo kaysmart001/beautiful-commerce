@@ -43,28 +43,6 @@
               </div>
             </div>
             
-            <!-- size filter start here -->
-            <div class="collection-collapse-block open">
-              <h3 class="collapse-block-title">size</h3>
-              <div class="collection-collapse-block-content">
-                <div class="size-selector">
-                  <div class="collection-brand-filter">
-                  <?php
-                  $statement = $pdo->prepare("SELECT * FROM tbl_size");
-                  $statement->execute();
-                  $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-                  foreach ($result as $row): ?>
-                    <div class="custom-control custom-checkbox  form-check collection-filter-checkbox">
-                      <input type="checkbox" class="custom-control-input form-check-input filter_all size" id="size-<?php echo $row['size_id']; ?>" value="<?php echo $row['size_name']; ?>">
-                      <label class="custom-control-label form-check-label" for="size-<?php echo $row['size_id']; ?>"><?php echo $row['size_name']; ?></label>
-                    </div>
-                  <?php endforeach; ?>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
             <!-- price filter start here -->
             <div class="collection-collapse-block border-0 open">
               <h3 class="collapse-block-title">price</h3>

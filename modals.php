@@ -738,12 +738,15 @@ $min=$row['minimum_price'];
  ==========================*/
 
     $(".js-range-slider").ionRangeSlider({
-       type: "double",
+        type: "double",
         grid: true,
         min: 0,
-        max: <?php echo $max + 5000; ?>,
+        max: <?php echo $max + 10000; ?>,
         from: <?php echo $min; ?>,
         to: <?php echo $max; ?>,
+        prettify_enabled: true,
+        prettify_separator: ",",
+        max_postfix: "+",
     });
  
 </script>
@@ -795,18 +798,17 @@ $('.quickie').on('click',function(){
 
 <script>
   $(document).ready(function() {
-
       filter_data();
-
       function filter_data() {
           $('.filter_data');
           var action = 'fetch_data';
+          var sort_by=$('#sort_by').val();
+          var per_page=Number($('#per_page').val());
           // var minimum_price = $('.js-range-slider').val();
           // var maximum_price = $('.js-range-slider').val();
           var brand = get_filter('brand');
           var color = get_filter('color');
           var size = get_filter('size');
-          // var sorting=get_filter('sorting');
           var id=<?php echo $id; ?>;
           var type='<?php echo $type; ?>';
           $.ajax({
@@ -820,10 +822,12 @@ $('.quickie').on('click',function(){
                   color: color,
                   size: size,
                   id:id,
-                  type:type
+                  type:type,
+                  sort_by:sort_by,
               },
               success: function(data) {
                   $('.filter_data').html(data);
+                  $(".col-grid-box").slice(0, per_page).show();
               }
           });
       }
@@ -840,8 +844,24 @@ $('.quickie').on('click',function(){
           filter_data();
       });
 
+      $('#sort_by').change(function() {
+          filter_data();
+      });
 
+      $('#per_page').change(function() {
+          filter_data();
+      });
+    
+      $(".loadMore").on('click', function (e) {
+        e.preventDefault();
+        $(".col-grid-box:hidden").slice(0, per_page).slideDown();
+        if ($(".col-grid-box:hidden").length == 0) {
+          $(".load-more-sec").html('<h5 class="alert alert-primary">No more Products!</h5>');
+        }
+      });
   });
+
+
 </script>
 
 <script type="text/javascript">
