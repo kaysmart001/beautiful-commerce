@@ -36,13 +36,15 @@ if(isset($_POST['form1'])) {
         }
     }
 
+  	$active=isset($_POST['active']) ? $_POST['active'] : 0;
+
     if($valid == 1) {
     	// uploading the image
         $final_name = 'collection'.mt_rand().'.'.$ext;
         move_uploaded_file( $path_tmp, '../assets/uploads/collections/'.$final_name );
 		// Saving data into the main table tbl_size
-		$statement = $pdo->prepare("INSERT INTO tbl_collection (collection_name,collection_content,collection_image) VALUES (?,?,?)");
-		$statement->execute(array($_POST['collection_name'],$_POST['content'],$final_name));
+		$statement = $pdo->prepare("INSERT INTO tbl_collection (collection_name,collection_content,collection_image,active) VALUES (?,?,?,?)");
+		$statement->execute(array($_POST['collection_name'],$_POST['content'],$final_name,$active));
 	
     	$success_message = 'Collection is added successfully.';
     }
@@ -91,7 +93,7 @@ if(isset($_POST['form1'])) {
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="col-sm-2 control-label">Content *</label>
+							<label for="" class="col-sm-2 control-label">Collection Content *</label>
 							<div class="col-sm-6">
 								<textarea class="form-control" name="content" style="height:140px;"></textarea>
 							</div>
@@ -102,9 +104,13 @@ if(isset($_POST['form1'])) {
                                 <input type="file" name="collection_image">
                             </div>
                         </div>
-                        <div class="custom-control custom-switch">
-                          <input type="checkbox" class="custom-control-input" id="activate" name="active">
-                          <label class="custom-control-label" for="activate">Active</label>
+                        <div class="mid">
+                          <label class="col-sm-2 control-label">Active ? *</label>
+                          <label class="rocker rocker-small">
+                            <input type="checkbox" name="active" value="1" checked>
+                            <span class="switch-left">Yes</span>
+                            <span class="switch-right">No</span>
+                          </label>
                         </div>
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label"></label>

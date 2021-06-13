@@ -26,13 +26,14 @@
 			        <th>Collection Name</th>
                     <th>Content</th>
                     <th>Photo</th>
+                    <th>Active?</th>
 			        <th>Action</th>
 			    </tr>
 			</thead>
             <tbody>
             	<?php
             	$i=0;
-            	$statement = $pdo->prepare("SELECT * FROM tbl_collection ORDER BY collection_id ASC");
+            	$statement = $pdo->prepare("SELECT * FROM tbl_collection ORDER BY collection_id DESC");
             	$statement->execute();
             	$result = $statement->fetchAll(PDO::FETCH_ASSOC);							
             	foreach ($result as $row) {
@@ -44,6 +45,7 @@
                         <td><?php echo $row['collection_content']; ?></td>
                         <td><img src="../assets/uploads/collections/<?php echo $row['collection_image']; ?>" alt="<?php echo $row['collection_name']; ?>" style="width:100px;">
                         </td>
+                        <td><?php echo $row['active']==1 ? 'Yes':'No'; ?></td>
 	                    <td>
 	                        <a href="collection-edit.php?id=<?php echo $row['collection_id']; ?>" class="btn btn-primary btn-xs">Edit</a>
 	                        <a href="#" class="btn btn-danger btn-xs" data-href="collection-delete.php?id=<?php echo $row['collection_id']; ?>" data-toggle="modal" data-target="#confirm-delete">Delete</a>

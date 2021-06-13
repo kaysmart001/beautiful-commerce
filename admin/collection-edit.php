@@ -4,30 +4,35 @@
 if(isset($_POST['form1'])) {
 	$valid = 1;
 
-    if(empty($_POST['brand_name'])) {
+    if(empty($_POST['collection_name'])) {
         $valid = 0;
-        $error_message .= "Brand Name can not be empty<br>";
+        $error_message .= "Collection Name can not be empty<br>";
     } else {
 		// Duplicate brand checking
     	// current brand name that is in the database
-    	$statement = $pdo->prepare("SELECT * FROM tbl_brand WHERE brand_id=?");
+    	$statement = $pdo->prepare("SELECT * FROM tbl_collection WHERE collection_id=?");
 		$statement->execute(array($_REQUEST['id']));
 		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 		foreach($result as $row) {
-			$current_brand_name = $row['brand_name'];
+			$current_collection_name = $row['collection_name'];
 		}
 
-		$statement = $pdo->prepare("SELECT * FROM tbl_brand WHERE brand_name=? and brand_name!=?");
-    	$statement->execute(array($_POST['brand_name'],$current_brand_name));
+		$statement = $pdo->prepare("SELECT * FROM tbl_collection WHERE collection_name=? and collection_name!=?");
+    	$statement->execute(array($_POST['collection_name'],$current_collection_name));
     	$total = $statement->rowCount();							
     	if($total) {
     		$valid = 0;
-        	$error_message .= 'Brand name already exists<br>';
+        	$error_message .= 'Collection name already exists<br>';
     	}
     }
 
-    $path = $_FILES['brand_image']['name'];
-    $path_tmp = $_FILES['brand_image']['tmp_name'];
+    if(empty($_POST['content'])) {
+        $valid = 0;
+        $error_message .= "Collection Content can not be empty<br>";
+    }
+
+    $path = $_FILES['collection_image']['name'];
+    $path_tmp = $_FILES['collection_image']['tmp_name'];
 
     if($path != '') {
         $ext = pathinfo( $path, PATHINFO_EXTENSION );
@@ -38,33 +43,35 @@ if(isset($_POST['form1'])) {
         }
     }
 
+    $active=isset($_POST['active']) ? 1 : 0;
+
     if($valid == 1) {  
 
         if($path=='') {
 		// updating into the database
-		$statement = $pdo->prepare("UPDATE tbl_brand SET brand_name=? WHERE brand_id=?");
-		$statement->execute(array($_POST['brand_name'],$_REQUEST['id']));
+		$statement = $pdo->prepare("UPDATE tbl_collection SET collection_name=?, collection_content=?, active=? WHERE collection_id=?");
+		$statement->execute(array($_POST['collection_name'],$_POST['content'],$active, $_REQUEST['id']));
 
-    	$success_message = 'Brand is updated successfully.';
+    	$success_message = 'Collection is updated successfully.';
         }else{
             // removing the existing photo
-        $statement = $pdo->prepare("SELECT * FROM tbl_brand WHERE brand_id=?");
+        $statement = $pdo->prepare("SELECT * FROM tbl_collection WHERE collection_id=?");
         $statement->execute(array($_REQUEST['id']));
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);                           
         foreach ($result as $row) {
-            $image = $row['brand_image'];
-            unlink('../assets/uploads/brands/'.$image);
+            $image = $row['collection_image'];
+            unlink('../assets/uploads/collections/'.$image);
         }
 
         // uploading the image
-        $final_name = 'Brand'.mt_rand().'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/brands/'.$final_name ); 
+        $final_name = 'collection'.mt_rand().'.'.$ext;
+        move_uploaded_file( $path_tmp, '../assets/uploads/collections/'.$final_name ); 
 
         // updating into the database
-        $statement = $pdo->prepare("UPDATE tbl_brand SET brand_name=?, brand_image=? WHERE brand_id=?");
-        $statement->execute(array($_POST['brand_name'],$final_name,$_REQUEST['id']));
+        $statement = $pdo->prepare("UPDATE tbl_collection SET collection_name=?, collection_content=?, collection_image=?, active=? WHERE collection_id=?");
+        $statement->execute(array($_POST['collection_name'],$_POST['content'],$final_name, $active, $_REQUEST['id']));
 
-        $success_message = 'Brand is updated successfully.';
+        $success_message = 'Collection is updated successfully.';
         }
     }
 }
@@ -76,7 +83,7 @@ if(!isset($_REQUEST['id'])) {
 	exit;
 } else {
 	// Check the id is valid or not
-	$statement = $pdo->prepare("SELECT * FROM tbl_brand WHERE brand_id=?");
+	$statement = $pdo->prepare("SELECT * FROM tbl_collection WHERE collection_id=?");
 	$statement->execute(array($_REQUEST['id']));
 	$total = $statement->rowCount();
 	$result = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -89,18 +96,20 @@ if(!isset($_REQUEST['id'])) {
 
 <section class="content-header">
 	<div class="content-header-left">
-		<h1>Edit Brand</h1>
+		<h1>Edit Collection</h1>
 	</div>
 	<div class="content-header-right">
-		<a href="brand.php" class="btn btn-primary btn-sm">View All</a>
+		<a href="collection.php" class="btn btn-primary btn-sm">View All</a>
 	</div>
 </section>
 
 
 <?php							
 foreach ($result as $row) {
-	$brand_name = $row['brand_name'];
-    $brand_image = $row['brand_image'];
+	$collection_name = $row['collection_name'];
+    $collection_image = $row['collection_image'];
+    $collection_content = $row['collection_content'];
+    $active = $row['active'];
 }
 ?>
 
@@ -131,22 +140,36 @@ foreach ($result as $row) {
 
             <div class="box-body">
                 <div class="form-group">
-                    <label for="" class="col-sm-2 control-label">Brand Name <span>*</span></label>
+                    <label for="" class="col-sm-2 control-label">Collection Name <span>*</span></label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" name="brand_name" value="<?php echo $brand_name; ?>">
+                        <input type="text" class="form-control" name="collection_name" value="<?php echo $collection_name; ?>">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label">Collection Content *</label>
+                    <div class="col-sm-6">
+                        <textarea class="form-control" name="content" style="height:140px;"><?php echo $collection_content; ?></textarea>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="" class="col-sm-2 control-label">Existing Photo</label>
                     <div class="col-sm-6" style="padding-top:6px;">
-                        <img src="../assets/uploads/brands/<?php echo $brand_image; ?>" class="existing-photo" style="height:80px;">
+                        <img src="../assets/uploads/collections/<?php echo $collection_image; ?>" class="existing-photo" style="height:80px;">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="" class="col-sm-2 control-label">Brand Image</label>
+                    <label for="" class="col-sm-2 control-label">Collection Image</label>
                     <div class="col-sm-6" style="padding-top:6px;">
-                        <input type="file" name="brand_image">
+                        <input type="file" name="collection_image">
                     </div>
+                </div>
+                <div class="mid">
+                  <label class="col-sm-2 control-label">Active ? *</label>
+                  <label class="rocker rocker-small">
+                    <input type="checkbox" name="active"  <?php echo $active==1 ? "checked": ""; ?>>
+                    <span class="switch-left">Yes</span>
+                    <span class="switch-right">No</span>
+                  </label>
                 </div>
                 <div class="form-group">
                 	<label for="" class="col-sm-2 control-label"></label>

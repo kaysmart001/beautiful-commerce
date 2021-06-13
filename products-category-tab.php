@@ -116,7 +116,7 @@
                                           <a href="product.php?id=<?php echo $row2['p_id']; ?>">
                                              <h3><?php echo $row2['p_name']; ?></h3>
                                           </a>
-                                          <h4><?php echo $currency.$row2['p_current_price']; ?><span><?php if($row2['p_old_price'] != ''): ?>
+                                          <h4><?php echo $currency.$row2['p_current_price']; ?><span><?php if($row2['p_old_price'] != 0): ?>
                                           <?php echo $currency.$row2['p_old_price']; ?>
                                           <?php endif; ?></span></h4>
                                           <a class="btn btn-rounded  btn-sm" href="product.php?id=<?php echo $row2['p_id']; ?>" >shop now</a>
@@ -164,9 +164,9 @@
                                         if($tot_rating == 0) {
                                             $avg_rating = 0;
                                         } else {
-                                            $result1 = $statement1->fetchAll(PDO::FETCH_ASSOC);
-                                            foreach ($result1 as $row1) {
-                                                $t_rating = $t_rating + $row1['rating'];
+                                            $result2 = $statement1->fetchAll(PDO::FETCH_ASSOC);
+                                            foreach ($result2 as $row2) {
+                                                $t_rating = $t_rating + $row2['rating'];
                                             }
                                             $avg_rating = $t_rating / $tot_rating;
                                         }
@@ -228,9 +228,13 @@
                                           <a href="product.php?id=<?php echo $row1['p_id']; ?>">
                                              <h3><?php echo $row1['p_name']; ?></h3>
                                           </a>
-                                          <h4><?php echo $currency.$row1['p_current_price']; ?><span><?php if($row1['p_old_price'] != ''): ?>
+                                          <h4><?php echo $currency.$row1['p_current_price']; ?>
+                                          <span>
+                                            <?php if($row1['p_old_price'] != 0): ?>
                                           <?php echo $currency.$row1['p_old_price']; ?>
-                                          <?php endif; ?></span></h4>
+                                          <?php endif; ?>
+                                          </span>
+                                        </h4>
                                           <a class="btn btn-rounded  btn-sm" href="product.php?id=<?php echo $row1['p_id']; ?>" >shop now</a>
                                        </div>
                                     </div>

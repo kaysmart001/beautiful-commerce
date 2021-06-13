@@ -37,6 +37,7 @@ if(!isset($_SESSION['user'])) {
 	<link rel="stylesheet" href="css/AdminLTE.min.css">
 	<link rel="stylesheet" href="css/_all-skins.min.css">
 	<link rel="stylesheet" href="css/on-off-switch.css"/>
+	<link rel="stylesheet" href="css/custom-switch.css"/>
 	<link rel="stylesheet" href="css/summernote.css">
 	<link rel="stylesheet" href="style.css">
 

@@ -26,10 +26,12 @@ if(isset($_POST['form1'])) {
     	}
     }
 
+    $show_on_menu=isset($_POST['show_on_menu']) ? 1 : 0;
+
     if($valid == 1) {    	
 		// updating into the database
 		$statement = $pdo->prepare("UPDATE tbl_top_category SET tcat_name=?,show_on_menu=? WHERE tcat_id=?");
-		$statement->execute(array($_POST['tcat_name'],$_POST['show_on_menu'],$_REQUEST['id']));
+		$statement->execute(array($_POST['tcat_name'],$show_on_menu,$_REQUEST['id']));
 
     	$success_message = 'Top Category is updated successfully.';
     }
@@ -102,14 +104,13 @@ foreach ($result as $row) {
                         <input type="text" class="form-control" name="tcat_name" value="<?php echo $tcat_name; ?>">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="" class="col-sm-2 control-label">Show on Menu? <span>*</span></label>
-                    <div class="col-sm-4">
-                        <select name="show_on_menu" class="form-control" style="width:auto;">
-                            <option value="0" <?php if($show_on_menu == 0) {echo 'selected';} ?>>No</option>
-                            <option value="1" <?php if($show_on_menu == 1) {echo 'selected';} ?>>Yes</option>
-                        </select>
-                    </div>
+                <div class="mid">
+                  <label class="col-sm-2 control-label">Show on Menu ? <span>*</span></label>
+                  <label class="rocker rocker-small">
+                    <input type="checkbox" name="show_on_menu" <?php echo $show_on_menu==1 ? "checked": ""; ?>>
+                    <span class="switch-left">Yes</span>
+                    <span class="switch-right">No</span>
+                  </label>
                 </div>
                 <div class="form-group">
                 	<label for="" class="col-sm-2 control-label"></label>

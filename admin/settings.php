@@ -126,10 +126,10 @@ if(isset($_POST['form12'])) {
 }
 
 if(isset($_POST['form3'])) {
-    
+    $newsletter_on_off=isset($_POST['newsletter_on_off']) ? 1 : 0;
     // updating the database
     $statement = $pdo->prepare("UPDATE tbl_settings SET newsletter_on_off=?, footer_about=?, footer_copyright=?, contact_name=?, contact_address=?, contact_email=?, contact_phone=?, contact_fax=?, contact_map_iframe=? WHERE id=1");
-    $statement->execute(array($_POST['newsletter_on_off'],$_POST['footer_about'],$_POST['footer_copyright'],$_POST['contact_name'],$_POST['contact_address'],$_POST['contact_email'],$_POST['contact_phone'],$_POST['contact_fax'],$_POST['contact_map_iframe']));
+    $statement->execute(array($newsletter_on_off,$_POST['footer_about'],$_POST['footer_copyright'],$_POST['contact_name'],$_POST['contact_address'],$_POST['contact_email'],$_POST['contact_phone'],$_POST['contact_fax'],$_POST['contact_map_iframe']));
 
     $success_message = 'General content settings is updated successfully.';
     
@@ -154,9 +154,16 @@ if(isset($_POST['form5'])) {
 
 
 if(isset($_POST['form6_0'])) {
+    $home_service_on_off=isset($_POST['home_service_on_off']) ? 1 : 0;
+    $home_welcome_on_off=isset($_POST['home_welcome_on_off']) ? 1 : 0;
+    $home_featured_product_on_off=isset($_POST['home_featured_product_on_off']) ? 1 : 0;
+    $home_latest_product_on_off=isset($_POST['home_latest_product_on_off']) ? 1 : 0;
+    $home_popular_product_on_off=isset($_POST['home_popular_product_on_off']) ? 1 : 0;
+    $home_testimonial_on_off=isset($_POST['home_testimonial_on_off']) ? 1 : 0;
+    $home_blog_on_off=isset($_POST['home_blog_on_off']) ? 1 : 0;
     // updating the database
     $statement = $pdo->prepare("UPDATE tbl_settings SET home_service_on_off=?, home_welcome_on_off=?, home_featured_product_on_off=?, home_latest_product_on_off=?, home_popular_product_on_off=?, home_testimonial_on_off=?, home_blog_on_off=? WHERE id=1");
-    $statement->execute(array($_POST['home_service_on_off'],$_POST['home_welcome_on_off'],$_POST['home_featured_product_on_off'],$_POST['home_latest_product_on_off'],$_POST['home_popular_product_on_off'],$_POST['home_testimonial_on_off'],$_POST['home_blog_on_off']));
+    $statement->execute(array($home_service_on_off,$home_welcome_on_off,$home_featured_product_on_off,$home_latest_product_on_off,$home_popular_product_on_off,$home_testimonial_on_off,$home_blog_on_off));
 
     $success_message = 'Section On-Off Settings is updated successfully.';
 }
@@ -404,375 +411,7 @@ if(isset($_POST['form6_3'])) {
  
 }
 
-if(isset($_POST['form7_1'])) {
-    $valid = 1;
 
-    $path = $_FILES['photo']['name'];
-    $path_tmp = $_FILES['photo']['tmp_name'];
-
-    if($path == '') {
-        $valid = 0;
-        $error_message .= 'You must have to select a photo<br>';
-    } else {
-        $ext = pathinfo( $path, PATHINFO_EXTENSION );
-        $file_name = basename( $path, '.' . $ext );
-        if( $ext!='jpg' && $ext!='png' && $ext!='jpeg' && $ext!='gif' ) {
-            $valid = 0;
-            $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
-        }
-    }
-
-    if($valid == 1) {
-        // removing the existing photo
-        $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
-        $statement->execute();
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);                           
-        foreach ($result as $row) {
-            $banner_login = $row['banner_login'];
-            unlink('../assets/uploads/'.$banner_login);
-        }
-
-        // updating the data
-        $final_name = 'banner_login'.'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
-
-        // updating the database
-        $statement = $pdo->prepare("UPDATE tbl_settings SET banner_login=? WHERE id=1");
-        $statement->execute(array($final_name));
-
-        $success_message = 'Login Page Banner is updated successfully.';
-        
-    }
-}
-
-if(isset($_POST['form7_2'])) {
-    $valid = 1;
-
-    $path = $_FILES['photo']['name'];
-    $path_tmp = $_FILES['photo']['tmp_name'];
-
-    if($path == '') {
-        $valid = 0;
-        $error_message .= 'You must have to select a photo<br>';
-    } else {
-        $ext = pathinfo( $path, PATHINFO_EXTENSION );
-        $file_name = basename( $path, '.' . $ext );
-        if( $ext!='jpg' && $ext!='png' && $ext!='jpeg' && $ext!='gif' ) {
-            $valid = 0;
-            $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
-        }
-    }
-
-    if($valid == 1) {
-        // removing the existing photo
-        $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
-        $statement->execute();
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);                           
-        foreach ($result as $row) {
-            $banner_registration = $row['banner_registration'];
-            unlink('../assets/uploads/'.$banner_registration);
-        }
-
-        // updating the data
-        $final_name = 'banner_registration'.'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
-
-        // updating the database
-        $statement = $pdo->prepare("UPDATE tbl_settings SET banner_registration=? WHERE id=1");
-        $statement->execute(array($final_name));
-
-        $success_message = 'Registration Page Banner is updated successfully.';
-        
-    }
-}
-
-if(isset($_POST['form7_3'])) {
-    $valid = 1;
-
-    $path = $_FILES['photo']['name'];
-    $path_tmp = $_FILES['photo']['tmp_name'];
-
-    if($path == '') {
-        $valid = 0;
-        $error_message .= 'You must have to select a photo<br>';
-    } else {
-        $ext = pathinfo( $path, PATHINFO_EXTENSION );
-        $file_name = basename( $path, '.' . $ext );
-        if( $ext!='jpg' && $ext!='png' && $ext!='jpeg' && $ext!='gif' ) {
-            $valid = 0;
-            $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
-        }
-    }
-
-    if($valid == 1) {
-        // removing the existing photo
-        $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
-        $statement->execute();
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);                           
-        foreach ($result as $row) {
-            $banner_forget_password = $row['banner_forget_password'];
-            unlink('../assets/uploads/'.$banner_forget_password);
-        }
-
-        // updating the data
-        $final_name = 'banner_forget_password'.'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
-
-        // updating the database
-        $statement = $pdo->prepare("UPDATE tbl_settings SET banner_forget_password=? WHERE id=1");
-        $statement->execute(array($final_name));
-
-        $success_message = 'Forget Password Page Banner is updated successfully.';
-        
-    }
-}
-
-if(isset($_POST['form7_4'])) {
-    $valid = 1;
-
-    $path = $_FILES['photo']['name'];
-    $path_tmp = $_FILES['photo']['tmp_name'];
-
-    if($path == '') {
-        $valid = 0;
-        $error_message .= 'You must have to select a photo<br>';
-    } else {
-        $ext = pathinfo( $path, PATHINFO_EXTENSION );
-        $file_name = basename( $path, '.' . $ext );
-        if( $ext!='jpg' && $ext!='png' && $ext!='jpeg' && $ext!='gif' ) {
-            $valid = 0;
-            $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
-        }
-    }
-
-    if($valid == 1) {
-        // removing the existing photo
-        $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
-        $statement->execute();
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);                           
-        foreach ($result as $row) {
-            $banner_reset_password = $row['banner_reset_password'];
-            unlink('../assets/uploads/'.$banner_reset_password);
-        }
-
-        // updating the data
-        $final_name = 'banner_reset_password'.'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
-
-        // updating the database
-        $statement = $pdo->prepare("UPDATE tbl_settings SET banner_reset_password=? WHERE id=1");
-        $statement->execute(array($final_name));
-
-        $success_message = 'Reset Password Page Banner is updated successfully.';
-        
-    }
-}
-
-
-if(isset($_POST['form7_6'])) {
-    $valid = 1;
-
-    $path = $_FILES['photo']['name'];
-    $path_tmp = $_FILES['photo']['tmp_name'];
-
-    if($path == '') {
-        $valid = 0;
-        $error_message .= 'You must have to select a photo<br>';
-    } else {
-        $ext = pathinfo( $path, PATHINFO_EXTENSION );
-        $file_name = basename( $path, '.' . $ext );
-        if( $ext!='jpg' && $ext!='png' && $ext!='jpeg' && $ext!='gif' ) {
-            $valid = 0;
-            $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
-        }
-    }
-
-    if($valid == 1) {
-        // removing the existing photo
-        $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
-        $statement->execute();
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);                           
-        foreach ($result as $row) {
-            $banner_search = $row['banner_search'];
-            unlink('../assets/uploads/'.$banner_search);
-        }
-
-        // updating the data
-        $final_name = 'banner_search'.'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
-
-        // updating the database
-        $statement = $pdo->prepare("UPDATE tbl_settings SET banner_search=? WHERE id=1");
-        $statement->execute(array($final_name));
-
-        $success_message = 'Search Page Banner is updated successfully.';
-        
-    }
-}
-
-if(isset($_POST['form7_7'])) {
-    $valid = 1;
-
-    $path = $_FILES['photo']['name'];
-    $path_tmp = $_FILES['photo']['tmp_name'];
-
-    if($path == '') {
-        $valid = 0;
-        $error_message .= 'You must have to select a photo<br>';
-    } else {
-        $ext = pathinfo( $path, PATHINFO_EXTENSION );
-        $file_name = basename( $path, '.' . $ext );
-        if( $ext!='jpg' && $ext!='png' && $ext!='jpeg' && $ext!='gif' ) {
-            $valid = 0;
-            $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
-        }
-    }
-
-    if($valid == 1) {
-        // removing the existing photo
-        $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
-        $statement->execute();
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);                           
-        foreach ($result as $row) {
-            $banner_cart = $row['banner_cart'];
-            unlink('../assets/uploads/'.$banner_cart);
-        }
-
-        // updating the data
-        $final_name = 'banner_cart'.'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
-
-        // updating the database
-        $statement = $pdo->prepare("UPDATE tbl_settings SET banner_cart=? WHERE id=1");
-        $statement->execute(array($final_name));
-
-        $success_message = 'Cart Page Banner is updated successfully.';
-        
-    }
-}
-
-if(isset($_POST['form7_8'])) {
-    $valid = 1;
-
-    $path = $_FILES['photo']['name'];
-    $path_tmp = $_FILES['photo']['tmp_name'];
-
-    if($path == '') {
-        $valid = 0;
-        $error_message .= 'You must have to select a photo<br>';
-    } else {
-        $ext = pathinfo( $path, PATHINFO_EXTENSION );
-        $file_name = basename( $path, '.' . $ext );
-        if( $ext!='jpg' && $ext!='png' && $ext!='jpeg' && $ext!='gif' ) {
-            $valid = 0;
-            $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
-        }
-    }
-
-    if($valid == 1) {
-        // removing the existing photo
-        $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
-        $statement->execute();
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);                           
-        foreach ($result as $row) {
-            $banner_checkout = $row['banner_checkout'];
-            unlink('../assets/uploads/'.$banner_checkout);
-        }
-
-        // updating the data
-        $final_name = 'banner_checkout'.'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
-
-        // updating the database
-        $statement = $pdo->prepare("UPDATE tbl_settings SET banner_checkout=? WHERE id=1");
-        $statement->execute(array($final_name));
-
-        $success_message = 'Checkout Page Banner is updated successfully.';
-        
-    }
-}
-
-if(isset($_POST['form7_9'])) {
-    $valid = 1;
-
-    $path = $_FILES['photo']['name'];
-    $path_tmp = $_FILES['photo']['tmp_name'];
-
-    if($path == '') {
-        $valid = 0;
-        $error_message .= 'You must have to select a photo<br>';
-    } else {
-        $ext = pathinfo( $path, PATHINFO_EXTENSION );
-        $file_name = basename( $path, '.' . $ext );
-        if( $ext!='jpg' && $ext!='png' && $ext!='jpeg' && $ext!='gif' ) {
-            $valid = 0;
-            $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
-        }
-    }
-
-    if($valid == 1) {
-        // removing the existing photo
-        $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
-        $statement->execute();
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);                           
-        foreach ($result as $row) {
-            $banner_product_category = $row['banner_product_category'];
-            unlink('../assets/uploads/'.$banner_product_category);
-        }
-
-        // updating the data
-        $final_name = 'banner_product_category'.'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
-
-        // updating the database
-        $statement = $pdo->prepare("UPDATE tbl_settings SET banner_product_category=? WHERE id=1");
-        $statement->execute(array($final_name));
-
-        $success_message = 'Product Category Page Banner is updated successfully.';
-        
-    }
-}
-
-if(isset($_POST['form7_10'])) {
-    $valid = 1;
-
-    $path = $_FILES['photo']['name'];
-    $path_tmp = $_FILES['photo']['tmp_name'];
-
-    if($path == '') {
-        $valid = 0;
-        $error_message .= 'You must have to select a photo<br>';
-    } else {
-        $ext = pathinfo( $path, PATHINFO_EXTENSION );
-        $file_name = basename( $path, '.' . $ext );
-        if( $ext!='jpg' && $ext!='png' && $ext!='jpeg' && $ext!='gif' ) {
-            $valid = 0;
-            $error_message .= 'You must have to upload jpg, jpeg, gif or png file<br>';
-        }
-    }
-
-    if($valid == 1) {
-        // removing the existing photo
-        $statement = $pdo->prepare("SELECT * FROM tbl_settings WHERE id=1");
-        $statement->execute();
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);                           
-        foreach ($result as $row) {
-            $banner_blog = $row['banner_blog'];
-            unlink('../assets/uploads/'.$banner_blog);
-        }
-
-        // updating the data
-        $final_name = 'banner_blog'.'.'.$ext;
-        move_uploaded_file( $path_tmp, '../assets/uploads/'.$final_name );
-
-        // updating the database
-        $statement = $pdo->prepare("UPDATE tbl_settings SET banner_blog=? WHERE id=1");
-        $statement->execute(array($final_name));
-
-        $success_message = 'Blog Page Banner is updated successfully.';
-        
-    }
-}
 
 if(isset($_POST['form9'])) {
     // updating the database
@@ -792,6 +431,12 @@ if(isset($_POST['form10'])) {
 
 
 if(isset($_POST['form11'])) {
+    $ads_above_welcome_on_off=isset($_POST['ads_above_welcome_on_off']) ? 1 : 0;
+    $ads_above_featured_product_on_off=isset($_POST['ads_above_featured_product_on_off']) ? 1 : 0;
+    $ads_above_testimonial_on_off=isset($_POST['ads_above_testimonial_on_off']) ? 1 : 0;
+    $ads_above_latest_product_on_off=isset($_POST['ads_above_latest_product_on_off']) ? 1 : 0;
+    $ads_above_popular_product_on_off=isset($_POST['ads_above_popular_product_on_off']) ? 1 : 0;
+    $ads_category_sidebar_on_off=isset($_POST['ads_category_sidebar_on_off']) ? 1 : 0;
     // updating the database
     $statement = $pdo->prepare("UPDATE tbl_settings 
     						SET 
@@ -804,12 +449,12 @@ if(isset($_POST['form11'])) {
 
     						WHERE id=1");
     $statement->execute(array(
-    						$_POST['ads_above_welcome_on_off'],
-    						$_POST['ads_above_featured_product_on_off'],
-    						$_POST['ads_above_latest_product_on_off'],
-    						$_POST['ads_above_popular_product_on_off'],
-    						$_POST['ads_above_testimonial_on_off'],
-    						$_POST['ads_category_sidebar_on_off']
+    						$ads_above_welcome_on_off,
+    						$ads_above_featured_product_on_off,
+    						$ads_above_latest_product_on_off,
+    						$ads_above_popular_product_on_off,
+    						$ads_above_testimonial_on_off,
+    						$ads_category_sidebar_on_off
     					));
 
     $success_message = 'Advertisement On-Off Section is updated successfully.';
@@ -862,15 +507,6 @@ foreach ($result as $row) {
     $meta_title_home                 = $row['meta_title_home'];
     $meta_keyword_home               = $row['meta_keyword_home'];
     $meta_description_home           = $row['meta_description_home'];
-    $banner_login                    = $row['banner_login'];
-    $banner_registration             = $row['banner_registration'];
-    $banner_forget_password          = $row['banner_forget_password'];
-    $banner_reset_password           = $row['banner_reset_password'];
-    $banner_search                   = $row['banner_search'];
-    $banner_cart                     = $row['banner_cart'];
-    $banner_checkout                 = $row['banner_checkout'];
-    $banner_product_category         = $row['banner_product_category'];
-    $banner_blog                     = $row['banner_blog'];
     $cta_title                       = $row['cta_title'];
     $cta_content                     = $row['cta_content'];
     $cta_read_more_text              = $row['cta_read_more_text'];
@@ -954,7 +590,6 @@ foreach ($result as $row) {
                         <li><a href="#tab_4" data-toggle="tab">Email</a></li>
                         <li><a href="#tab_5" data-toggle="tab">Post</a></li>
                         <li><a href="#tab_6" data-toggle="tab">Home Page</a></li>
-                        <li><a href="#tab_7" data-toggle="tab">Banner</a></li>
                         <li><a href="#tab_9" data-toggle="tab">Payment Settings</a></li>
                         <li><a href="#tab_10" data-toggle="tab">Head and Body Scripts</a></li>
                         <li><a href="#tab_11" data-toggle="tab">Ads</a></li>
@@ -1057,14 +692,13 @@ foreach ($result as $row) {
                             <form class="form-horizontal" action="" method="post">
                             <div class="box box-info">
                                 <div class="box-body">
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-2 control-label">Newsletter Section </label>
-                                        <div class="col-sm-3">
-                                            <select name="newsletter_on_off" class="form-control" style="width:auto;">
-                                                <option value="1" <?php if($newsletter_on_off == 1) {echo 'selected';} ?>>On</option>
-                                                <option value="0" <?php if($newsletter_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
+                                    <div class="mid">
+                                      <label class="col-sm-2 control-label">Newsletter Section</label>
+                                      <label class="rocker rocker-small">
+                                        <input type="checkbox" name="newsletter_on_off"  <?php echo $newsletter_on_off==1 ? "checked": ""; ?>>
+                                        <span class="switch-left">On</span>
+                                        <span class="switch-right">Off</span>
+                                      </label>
                                     </div>
                                     <div class="form-group">
                                         <label for="" class="col-sm-2 control-label">Footer - About Us </label>
@@ -1239,70 +873,62 @@ foreach ($result as $row) {
                             <form class="form-horizontal" action="" method="post">
                             <div class="box box-info">
                                 <div class="box-body">
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Service Section </label>
-                                        <div class="col-sm-4">
-                                            <select name="home_service_on_off" class="form-control" style="width:auto;">
-                                            	<option value="1" <?php if($home_service_on_off == 1) {echo 'selected';} ?>>On</option>
-                                            	<option value="0" <?php if($home_service_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
-                                    </div>      
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Welcome Section </label>
-                                        <div class="col-sm-4">
-                                            <select name="home_welcome_on_off" class="form-control" style="width:auto;">
-                                            	<option value="1" <?php if($home_welcome_on_off == 1) {echo 'selected';} ?>>On</option>
-                                            	<option value="0" <?php if($home_welcome_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
+                                    <div class="mid">
+                                      <label class="col-sm-2 control-label">Service Section</label>
+                                      <label class="rocker rocker-small">
+                                        <input type="checkbox" name="home_service_on_off"  <?php echo $home_service_on_off==1 ? "checked": ""; ?>>
+                                        <span class="switch-left">On</span>
+                                        <span class="switch-right">Off</span>
+                                      </label>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Featured Product Section </label>
-                                        <div class="col-sm-4">
-                                            <select name="home_featured_product_on_off" class="form-control" style="width:auto;">
-                                            	<option value="1" <?php if($home_featured_product_on_off == 1) {echo 'selected';} ?>>On</option>
-                                            	<option value="0" <?php if($home_featured_product_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
+                                    <div class="mid">
+                                      <label class="col-sm-2 control-label">Welcome Section</label>
+                                      <label class="rocker rocker-small">
+                                        <input type="checkbox" name="home_welcome_on_off"  <?php echo $home_welcome_on_off==1 ? "checked": ""; ?>>
+                                        <span class="switch-left">On</span>
+                                        <span class="switch-right">Off</span>
+                                      </label>
+                                    </div> 
+                                    <div class="mid">
+                                      <label class="col-sm-2 control-label">Featured Product Section</label>
+                                      <label class="rocker rocker-small">
+                                        <input type="checkbox" name="home_featured_product_on_off"  <?php echo $home_featured_product_on_off==1 ? "checked": ""; ?>>
+                                        <span class="switch-left">On</span>
+                                        <span class="switch-right">Off</span>
+                                      </label>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Latest Product Section </label>
-                                        <div class="col-sm-4">
-                                            <select name="home_latest_product_on_off" class="form-control" style="width:auto;">
-                                            	<option value="1" <?php if($home_latest_product_on_off == 1) {echo 'selected';} ?>>On</option>
-                                            	<option value="0" <?php if($home_latest_product_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
+                                    <div class="mid">
+                                      <label class="col-sm-2 control-label">Latest Product Section</label>
+                                      <label class="rocker rocker-small">
+                                        <input type="checkbox" name="home_latest_product_on_off"  <?php echo $home_latest_product_on_off==1 ? "checked": ""; ?>>
+                                        <span class="switch-left">On</span>
+                                        <span class="switch-right">Off</span>
+                                      </label>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Popular Product Section </label>
-                                        <div class="col-sm-4">
-                                            <select name="home_popular_product_on_off" class="form-control" style="width:auto;">
-                                            	<option value="1" <?php if($home_popular_product_on_off == 1) {echo 'selected';} ?>>On</option>
-                                            	<option value="0" <?php if($home_popular_product_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
+                                    <div class="mid">
+                                      <label class="col-sm-2 control-label">Popular Product Section</label>
+                                      <label class="rocker rocker-small">
+                                        <input type="checkbox" name="home_popular_product_on_off"  <?php echo $home_popular_product_on_off==1 ? "checked": ""; ?>>
+                                        <span class="switch-left">On</span>
+                                        <span class="switch-right">Off</span>
+                                      </label>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Testimonial Section </label>
-                                        <div class="col-sm-4">
-                                            <select name="home_testimonial_on_off" class="form-control" style="width:auto;">
-                                            	<option value="1" <?php if($home_testimonial_on_off == 1) {echo 'selected';} ?>>On</option>
-                                            	<option value="0" <?php if($home_testimonial_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
+                                    <div class="mid">
+                                      <label class="col-sm-2 control-label">Testimonial Section</label>
+                                      <label class="rocker rocker-small">
+                                        <input type="checkbox" name="home_testimonial_on_off"  <?php echo $home_testimonial_on_off==1 ? "checked": ""; ?>>
+                                        <span class="switch-left">On</span>
+                                        <span class="switch-right">Off</span>
+                                      </label>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Blog Section </label>
-                                        <div class="col-sm-4">
-                                            <select name="home_blog_on_off" class="form-control" style="width:auto;">
-                                            	<option value="1" <?php if($home_blog_on_off == 1) {echo 'selected';} ?>>On</option>
-                                            	<option value="0" <?php if($home_blog_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
+                                    <div class="mid">
+                                      <label class="col-sm-2 control-label">Blog Section</label>
+                                      <label class="rocker rocker-small">
+                                        <input type="checkbox" name="home_blog_on_off"  <?php echo $home_blog_on_off==1 ? "checked": ""; ?>>
+                                        <span class="switch-left">On</span>
+                                        <span class="switch-right">Off</span>
+                                      </label>
                                     </div>
-                                    
                                     <div class="form-group">
                                         <label for="" class="col-sm-3 control-label"></label>
                                         <div class="col-sm-6">
@@ -1549,9 +1175,6 @@ foreach ($result as $row) {
                             </div>
                             </form>
 
-
-                            
-
                             <h3>Newsletter Section</h3>
                             <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
                             <div class="box box-info">
@@ -1572,167 +1195,7 @@ foreach ($result as $row) {
                             </div>
                             </form>
 
-
                         </div>
-
-
-
-                        <div class="tab-pane" id="tab_7">
-
-                            <table class="table table-bordered">
-                                <tr>
-                                    <form action="" method="post" enctype="multipart/form-data">
-                                    <td style="width:50%">
-                                        <h4>Existing Login Page Banner</h4>
-                                        <p>
-                                            <img src="<?php echo '../assets/uploads/'.$banner_login; ?>" alt="" style="width: 100%;height:auto;"> 
-                                        </p>                                        
-                                    </td>
-                                    <td style="width:50%">
-                                        <h4>Change Login Page Banner</h4>
-                                        Select Photo<input type="file" name="photo">
-                                        <input type="submit" class="btn btn-primary btn-xs" value="Change" style="margin-top:10px;" name="form7_1">
-                                    </td>
-                                    </form>
-                                </tr>
-                                <tr>
-                                    <form action="" method="post" enctype="multipart/form-data">
-                                    <td style="width:50%">
-                                        <h4>Existing Registration Page Banner</h4>
-                                        <p>
-                                            <img src="<?php echo '../assets/uploads/'.$banner_registration; ?>" alt="" style="width: 100%;height:auto;">  
-                                        </p>                                        
-                                    </td>
-                                    <td style="width:50%">
-                                        <h4>Change Registration Page Banner</h4>
-                                        Select Photo<input type="file" name="photo">
-                                        <input type="submit" class="btn btn-primary btn-xs" value="Change" style="margin-top:10px;" name="form7_2">
-                                    </td>
-                                    </form>
-                                </tr>
-                                <tr>
-                                    <form action="" method="post" enctype="multipart/form-data">
-                                    <td style="width:50%">
-                                        <h4>Existing Forget Password Page Banner</h4>
-                                        <p>
-                                            <img src="<?php echo '../assets/uploads/'.$banner_forget_password; ?>" alt="" style="width: 100%;height:auto;">   
-                                        </p>                                        
-                                    </td>
-                                    <td style="width:50%">
-                                        <h4>Change Forget Password Page Banner</h4>
-                                        Select Photo<input type="file" name="photo">
-                                        <input type="submit" class="btn btn-primary btn-xs" value="Change" style="margin-top:10px;" name="form7_3">
-                                    </td>
-                                    </form>
-                                </tr>
-                                <tr>
-                                    <form action="" method="post" enctype="multipart/form-data">
-                                    <td style="width:50%">
-                                        <h4>Existing Reset Password Page Banner</h4>
-                                        <p>
-                                            <img src="<?php echo '../assets/uploads/'.$banner_reset_password; ?>" alt="" style="width: 100%;height:auto;">   
-                                        </p>                                        
-                                    </td>
-                                    <td style="width:50%">
-                                        <h4>Change Reset Password Page Banner</h4>
-                                        Select Photo<input type="file" name="photo">
-                                        <input type="submit" class="btn btn-primary btn-xs" value="Change" style="margin-top:10px;" name="form7_4">
-                                    </td>
-                                    </form>
-                                </tr>
-                                
-                                <tr>
-                                    <form action="" method="post" enctype="multipart/form-data">
-                                    <td style="width:50%">
-                                        <h4>Existing Search Page Banner</h4>
-                                        <p>
-                                            <img src="<?php echo '../assets/uploads/'.$banner_search; ?>" alt="" style="width: 100%;height:auto;">  
-                                        </p>                                        
-                                    </td>
-                                    <td style="width:50%">
-                                        <h4>Change Search Page Banner</h4>
-                                        Select Photo<input type="file" name="photo">
-                                        <input type="submit" class="btn btn-primary btn-xs" value="Change" style="margin-top:10px;" name="form7_6">
-                                    </td>
-                                    </form>
-                                </tr>
-
-
-                                <tr>
-                                    <form action="" method="post" enctype="multipart/form-data">
-                                    <td style="width:50%">
-                                        <h4>Existing Cart Page Banner</h4>
-                                        <p>
-                                            <img src="<?php echo '../assets/uploads/'.$banner_cart; ?>" alt="" style="width: 100%;height:auto;">  
-                                        </p>                                        
-                                    </td>
-                                    <td style="width:50%">
-                                        <h4>Change Cart Page Banner</h4>
-                                        Select Photo<input type="file" name="photo">
-                                        <input type="submit" class="btn btn-primary btn-xs" value="Change" style="margin-top:10px;" name="form7_7">
-                                    </td>
-                                    </form>
-                                </tr>
-
-
-                                <tr>
-                                    <form action="" method="post" enctype="multipart/form-data">
-                                    <td style="width:50%">
-                                        <h4>Existing Checkout Page Banner</h4>
-                                        <p>
-                                            <img src="<?php echo '../assets/uploads/'.$banner_checkout; ?>" alt="" style="width: 100%;height:auto;">  
-                                        </p>                                        
-                                    </td>
-                                    <td style="width:50%">
-                                        <h4>Change Checkout Page Banner</h4>
-                                        Select Photo<input type="file" name="photo">
-                                        <input type="submit" class="btn btn-primary btn-xs" value="Change" style="margin-top:10px;" name="form7_8">
-                                    </td>
-                                    </form>
-                                </tr>
-
-                                <tr>
-                                    <form action="" method="post" enctype="multipart/form-data">
-                                    <td style="width:50%">
-                                        <h4>Existing Product Category Page Banner</h4>
-                                        <p>
-                                            <img src="<?php echo '../assets/uploads/'.$banner_product_category; ?>" alt="" style="width: 100%;height:auto;">  
-                                        </p>                                        
-                                    </td>
-                                    <td style="width:50%">
-                                        <h4>Change Product Category Page Banner</h4>
-                                        Select Photo<input type="file" name="photo">
-                                        <input type="submit" class="btn btn-primary btn-xs" value="Change" style="margin-top:10px;" name="form7_9">
-                                    </td>
-                                    </form>
-                                </tr>
-
-                                <tr>
-                                    <form action="" method="post" enctype="multipart/form-data">
-                                    <td style="width:50%">
-                                        <h4>Existing Blog Page Banner</h4>
-                                        <p>
-                                            <img src="<?php echo '../assets/uploads/'.$banner_blog; ?>" alt="" style="width: 100%;height:auto;">  
-                                        </p>                                        
-                                    </td>
-                                    <td style="width:50%">
-                                        <h4>Change Blog Page Banner</h4>
-                                        Select Photo<input type="file" name="photo">
-                                        <input type="submit" class="btn btn-primary btn-xs" value="Change" style="margin-top:10px;" name="form7_10">
-                                    </td>
-                                    </form>
-                                </tr>
-                            </table>
-
-                        </div>
-
-
-
-                    
-
-
-
-
                         <div class="tab-pane" id="tab_9">
                             <form class="form-horizontal" action="" method="post">
                                 <div class="box box-info">
@@ -1797,7 +1260,6 @@ foreach ($result as $row) {
                             </form>
                         </div>
 
-
                         <div class="tab-pane" id="tab_10">
                             <form class="form-horizontal" action="" method="post">
                                 <div class="box box-info">
@@ -1831,67 +1293,60 @@ foreach ($result as $row) {
                             </form>
                         </div>
 
-
-
                         <div class="tab-pane" id="tab_11">
                             <h3>Advertisements On and Off</h3>
                             <form class="form-horizontal" action="" method="post">
                             <div class="box box-info">
                                 <div class="box-body">
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Above Welcome </label>
-                                        <div class="col-sm-4">
-                                            <select name="ads_above_welcome_on_off" class="form-control" style="width:auto;">
-                                            	<option value="1" <?php if($ads_above_welcome_on_off == 1) {echo 'selected';} ?>>On</option>
-                                            	<option value="0" <?php if($ads_above_welcome_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
-                                    </div>      
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Above Featured Product </label>
-                                        <div class="col-sm-4">
-                                            <select name="ads_above_featured_product_on_off" class="form-control" style="width:auto;">
-                                            	<option value="1" <?php if($ads_above_featured_product_on_off == 1) {echo 'selected';} ?>>On</option>
-                                            	<option value="0" <?php if($ads_above_featured_product_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
+                                    <div class="mid">
+                                      <label class="col-sm-2 control-label">Above Welcome</label>
+                                      <label class="rocker rocker-small">
+                                        <input type="checkbox" name="ads_above_welcome_on_off"  <?php echo $ads_above_welcome_on_off==1 ? "checked": ""; ?>>
+                                        <span class="switch-left">On</span>
+                                        <span class="switch-right">Off</span>
+                                      </label>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Above Latest Product </label>
-                                        <div class="col-sm-4">
-                                            <select name="ads_above_latest_product_on_off" class="form-control" style="width:auto;">
-                                            	<option value="1" <?php if($ads_above_latest_product_on_off == 1) {echo 'selected';} ?>>On</option>
-                                            	<option value="0" <?php if($ads_above_latest_product_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
+                                    <div class="mid">
+                                      <label class="col-sm-2 control-label">Above Featured Product</label>
+                                      <label class="rocker rocker-small">
+                                        <input type="checkbox" name="ads_above_featured_product_on_off"  <?php echo $ads_above_featured_product_on_off==1 ? "checked": ""; ?>>
+                                        <span class="switch-left">On</span>
+                                        <span class="switch-right">Off</span>
+                                      </label>
+                                    </div> 
+                                    <div class="mid">
+                                      <label class="col-sm-2 control-label">Above Latest Product</label>
+                                      <label class="rocker rocker-small">
+                                        <input type="checkbox" name="ads_above_latest_product_on_off"  <?php echo $ads_above_latest_product_on_off==1 ? "checked": ""; ?>>
+                                        <span class="switch-left">On</span>
+                                        <span class="switch-right">Off</span>
+                                      </label>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Above Popular Product </label>
-                                        <div class="col-sm-4">
-                                            <select name="ads_above_popular_product_on_off" class="form-control" style="width:auto;">
-                                            	<option value="1" <?php if($ads_above_popular_product_on_off == 1) {echo 'selected';} ?>>On</option>
-                                            	<option value="0" <?php if($ads_above_popular_product_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
+                                    <div class="mid">
+                                      <label class="col-sm-2 control-label">Above Popular Product</label>
+                                      <label class="rocker rocker-small">
+                                        <input type="checkbox" name="ads_above_popular_product_on_off"  <?php echo $ads_above_popular_product_on_off==1 ? "checked": ""; ?>>
+                                        <span class="switch-left">On</span>
+                                        <span class="switch-right">Off</span>
+                                      </label>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Above Testimonial </label>
-                                        <div class="col-sm-4">
-                                            <select name="ads_above_testimonial_on_off" class="form-control" style="width:auto;">
-                                            	<option value="1" <?php if($ads_above_testimonial_on_off == 1) {echo 'selected';} ?>>On</option>
-                                            	<option value="0" <?php if($ads_above_testimonial_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
+                                    <div class="mid">
+                                      <label class="col-sm-2 control-label">Above Testimonial</label>
+                                      <label class="rocker rocker-small">
+                                        <input type="checkbox" name="ads_above_testimonial_on_off"  <?php echo $ads_above_testimonial_on_off==1 ? "checked": ""; ?>>
+                                        <span class="switch-left">On</span>
+                                        <span class="switch-right">Off</span>
+                                      </label>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Category Page Sidebar </label>
-                                        <div class="col-sm-4">
-                                            <select name="ads_category_sidebar_on_off" class="form-control" style="width:auto;">
-                                            	<option value="1" <?php if($ads_category_sidebar_on_off == 1) {echo 'selected';} ?>>On</option>
-                                            	<option value="0" <?php if($ads_category_sidebar_on_off == 0) {echo 'selected';} ?>>Off</option>
-                                            </select>
-                                        </div>
-                                    </div>                                    
+                                    <div class="mid">
+                                      <label class="col-sm-2 control-label">Category Page Sidebar</label>
+                                      <label class="rocker rocker-small">
+                                        <input type="checkbox" name="ads_category_sidebar_on_off"  <?php echo $ads_category_sidebar_on_off==1 ? "checked": ""; ?>>
+                                        <span class="switch-left">On</span>
+                                        <span class="switch-right">Off</span>
+                                      </label>
+                                    </div>
+                           
                                     <div class="form-group">
                                         <label for="" class="col-sm-3 control-label"></label>
                                         <div class="col-sm-6">
@@ -1902,7 +1357,6 @@ foreach ($result as $row) {
                             </div>
                             </form>
                         </div>
-                        
                         
                         <div class="tab-pane" id="tab_8">
 
@@ -1925,21 +1379,11 @@ foreach ($result as $row) {
                             </div>
                             </form>
 
-
-                        </div>
-                        
-
-
-
+                        </div>                        
                     </div>
                 </div>
-
-                
-
-            </form>
         </div>
     </div>
-
 </section>
 
 <?php require_once('footer.php'); ?>

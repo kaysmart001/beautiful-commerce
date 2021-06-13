@@ -19,11 +19,13 @@ if(isset($_POST['form1'])) {
     	}
     }
 
+    $show_on_menu=isset($_POST['show_on_menu']) ? $_POST['show_on_menu'] : 0;
+
     if($valid == 1) {
 
 		// Saving data into the main table tbl_top_category
 		$statement = $pdo->prepare("INSERT INTO tbl_top_category (tcat_name,show_on_menu) VALUES (?,?)");
-		$statement->execute(array($_POST['tcat_name'],$_POST['show_on_menu']));
+		$statement->execute(array($_POST['tcat_name'],$show_on_menu));
 	
     	$success_message = 'Top Category is added successfully.';
     }
@@ -71,14 +73,13 @@ if(isset($_POST['form1'])) {
 								<input type="text" class="form-control" name="tcat_name">
 							</div>
 						</div>
-						<div class="form-group">
-							<label for="" class="col-sm-2 control-label">Show on Menu? <span>*</span></label>
-							<div class="col-sm-4">
-								<select name="show_on_menu" class="form-control" style="width:auto;">
-									<option value="0">No</option>
-									<option value="1">Yes</option>
-								</select>
-							</div>
+						<div class="mid">
+						  <label class="col-sm-2 control-label">Show on Menu ? <span>*</span></label>
+						  <label class="rocker rocker-small">
+						    <input type="checkbox" name="show_on_menu" value="1" checked>
+						    <span class="switch-left">Yes</span>
+						    <span class="switch-right">No</span>
+						  </label>
 						</div>
 						<div class="form-group">
 							<label for="" class="col-sm-2 control-label"></label>

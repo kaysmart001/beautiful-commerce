@@ -7,7 +7,7 @@ if(!isset($_REQUEST['id'])) {
 	exit;
 } else {
 	// Check the id is valid or not
-	$statement = $pdo->prepare("SELECT * FROM tbl_brand WHERE brand_id=?");
+	$statement = $pdo->prepare("SELECT * FROM tbl_collection WHERE collection_id=?");
 	$statement->execute(array($_REQUEST['id']));
 	$total = $statement->rowCount();
 	if( $total == 0 ) {
@@ -20,8 +20,8 @@ if(!isset($_REQUEST['id'])) {
 <?php
 
 	// Delete from tbl_size
-	$statement = $pdo->prepare("DELETE FROM tbl_brand WHERE brand_id=?");
+	$statement = $pdo->prepare("DELETE FROM tbl_collection WHERE collection_id=?");
 	$statement->execute(array($_REQUEST['id']));
 
-	header('location: brand.php');
+	header('location: collection.php');
 ?>
