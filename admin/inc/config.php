@@ -6,19 +6,19 @@ ini_set('error_reporting', E_ALL);
 date_default_timezone_set('Africa/Lagos');
 
 // Host Name
-$dbhost = 'localhost';
+$dbhost = 'sql311.epizy.com';
 
 // Database Name
-$dbname = 'cms';
+$dbname = 'epiz_33459705_store_db';
 
 // Database Username
-$dbuser = 'root';
+$dbuser = 'epiz_33459705';
 
 // Database Password
-$dbpass = '';
+$dbpass = 'hvZgW4p2guu7';
 
 // Defining base url
-define("BASE_URL", "http://localhost/balex/");
+define("BASE_URL", "http://thekaysmart.epizy.com/store/");
 
 // Getting Admin url
 define("ADMIN_URL", BASE_URL . "admin" . "/");
